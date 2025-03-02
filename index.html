@@ -39,6 +39,24 @@
             background-color: gray;
             cursor: not-allowed;
         }
+        #resetBtn {
+            background-color: red;
+            margin-left: 10px;
+        }
+        #progressBar {
+            width: 80%;
+            height: 20px;
+            background-color: white;
+            border-radius: 10px;
+            margin: 20px auto;
+            overflow: hidden;
+        }
+        #progress {
+            width: 0%;
+            height: 100%;
+            background-color: #4CAF50;
+            transition: width 0.3s;
+        }
         #message {
             margin-top: 20px;
             font-size: 16px;
@@ -51,7 +69,14 @@
     <h1>Tasbih Counter</h1>
     <h2 id="display">SubhanAllah 1</h2>
     <p id="count">0 / 100</p>
+
+    <div id="progressBar">
+        <div id="progress"></div>
+    </div>
+
     <button id="tasbihBtn" onclick="countTasbih()">Click to Count</button>
+    <button id="resetBtn" onclick="resetTasbih()">Reset</button>
+
     <p id="message"></p>
 
     <audio id="beep-sound">
@@ -100,9 +125,22 @@
                 return;
             }
 
+            // Update progress bar
+            document.getElementById("progress").style.width = (counter / 100) * 100 + "%";
+
             // Update display
             document.getElementById("display").innerText = phrases[phraseIndex] + " " + (counter % 33 || 33);
             document.getElementById("count").innerText = counter + " / 100";
+        }
+
+        function resetTasbih() {
+            counter = 0;
+            phraseIndex = 0;
+            document.getElementById("tasbihBtn").disabled = false;
+            document.getElementById("display").innerText = "SubhanAllah 1";
+            document.getElementById("count").innerText = "0 / 100";
+            document.getElementById("progress").style.width = "0%";
+            document.getElementById("message").innerText = "";
         }
     </script>
 
