@@ -57,28 +57,33 @@
 
     <script>
         let counter = 0;
-        let phrases = ["Subhanallah", "Alhamdulillah", "Allahu Akbar"];
+        let phrases = ["Subhan Allah", "Alhamdulillah", "Allahu Akbar"];
         let phraseIndex = 0;
+        let finalDua = "La ilaha ill-Allah wahdahu la sharika lah, lahu`l-mulk wa lahu`l-hamd wa huwa `ala kulli shay`in qadir";
 
         function countTasbih() {
-            if (counter < 99) {
-                document.getElementById("display").innerText = phrases[phraseIndex] + " " + (counter % 33 + 1);
-                counter++;
+            counter++;
 
-                // Alert, Vibration & Sound when switching phrases
-                if (counter % 33 === 0) {
-                    phraseIndex++;  
-                    alert("Switch to " + phrases[phraseIndex] + "!"); // Alert message
-                    navigator.vibrate(500); // Vibrate for 500ms (for mobile devices)
-                    document.getElementById("beep-sound").play(); // Play sound
-                }
-            } else if (counter === 99) {
-                document.getElementById("display").innerText = "La ilaha ill-Allah wahdahu la sharika lah, lahu`l-mulk wa lahu`l-hamd wa huwa `ala kulli shay`in qadir";
-                counter++;
+            // If completed 99, show the final dua
+            if (counter === 100) {
+                document.getElementById("display").innerText = finalDua;
+                alert("Tasbih completed with 100!");
+                document.getElementById("count").innerText = counter + " / 100";
+                document.getElementById("tasbihBtn").disabled = true;
+                return;
             }
 
+            // If switching to the next phrase (i.e., counter % 33 === 1), play alert/vibration
+            if (counter % 33 === 1 && counter !== 1) {
+                phraseIndex++;
+                alert("Switch to " + phrases[phraseIndex] + "!");
+                navigator.vibrate(500); // Vibrate for 500ms
+                document.getElementById("beep-sound").play(); // Play sound
+            }
+
+            // Update display
+            document.getElementById("display").innerText = phrases[phraseIndex] + " " + (counter % 33 || 33);
             document.getElementById("count").innerText = counter + " / 100";
-            if (counter === 100) document.getElementById("tasbihBtn").disabled = true;
         }
 
         function resetTasbih() {
