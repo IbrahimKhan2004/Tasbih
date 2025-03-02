@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tasbih Counter</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f4f4f4;
+            padding: 20px;
+        }
+        h1 {
+            color: #333;
+        }
+        #display {
+            font-size: 24px;
+            margin: 20px 0;
+            font-weight: bold;
+        }
+        #count {
+            font-size: 30px;
+            color: green;
+        }
+        button {
+            font-size: 20px;
+            padding: 10px 20px;
+            margin: 10px;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        .btn {
+            background-color: #28a745;
+            color: white;
+        }
+        .btn:disabled {
+            background-color: #aaa;
+        }
+        #reset {
+            background-color: #dc3545;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Tasbih Counter</h1>
+    <div id="display">Press the button to start</div>
+    <div id="count">0 / 100</div>
+    <button id="tasbihBtn" class="btn" onclick="countTasbih()">Click</button>
+    <button id="reset" onclick="resetTasbih()">Reset</button>
+
+    <script>
+        let counter = 0;
+        let phrases = ["Subhanallah", "Alhamdulillah", "Allahu Akbar"];
+        let phraseIndex = 0;
+
+        function countTasbih() {
+            if (counter < 99) {
+                document.getElementById("display").innerText = phrases[phraseIndex] + " " + (counter % 33 + 1);
+                counter++;
+                if (counter % 33 === 0) phraseIndex++; 
+            } else if (counter === 99) {
+                document.getElementById("display").innerText = "La ilaha ill-Allah wahdahu la sharika lah, lahu`l-mulk wa lahu`l-hamd wa huwa `ala kulli shay`in qadir";
+                counter++;
+            }
+
+            document.getElementById("count").innerText = counter + " / 100";
+            if (counter === 100) document.getElementById("tasbihBtn").disabled = true;
+        }
+
+        function resetTasbih() {
+            counter = 0;
+            phraseIndex = 0;
+            document.getElementById("display").innerText = "Press the button to start";
+            document.getElementById("count").innerText = "0 / 100";
+            document.getElementById("tasbihBtn").disabled = false;
+        }
+    </script>
+
+</body>
+</html>
