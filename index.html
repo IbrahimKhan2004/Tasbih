@@ -8,11 +8,12 @@
         body {
             font-family: Arial, sans-serif;
             text-align: center;
-            background-color: #f4f4f4;
+            background-color: black; /* Dark background */
+            color: white; /* White text for visibility */
             padding: 20px;
         }
         h1 {
-            color: #333;
+            color: white;
         }
         #display {
             font-size: 24px;
@@ -21,7 +22,7 @@
         }
         #count {
             font-size: 30px;
-            color: green;
+            color: lightgreen;
         }
         button {
             font-size: 20px;
@@ -32,20 +33,19 @@
             border-radius: 5px;
         }
         .btn {
-            background-color: #28a745;
+            background-color: #1f8a44; /* Darker green */
             color: white;
         }
         .btn:disabled {
-            background-color: #aaa;
+            background-color: #555; /* Disabled look */
         }
         #reset {
-            background-color: #dc3545;
-            color: white;
+            background-color: #b30000; /* Dark red */
         }
         #progressBar {
             width: 80%;
             height: 20px;
-            background-color: white;
+            background-color: grey;
             border-radius: 10px;
             margin: 20px auto;
             overflow: hidden;
@@ -53,12 +53,12 @@
         #progress {
             width: 0%;
             height: 100%;
-            background-color: #28a745;
+            background-color: lightgreen;
             transition: width 0.3s;
         }
         #message {
             font-size: 18px;
-            color: #555;
+            color: lightgray;
             margin-top: 20px;
         }
     </style>
@@ -76,10 +76,8 @@
     <button id="tasbihBtn" class="btn" onclick="countTasbih()">Click</button>
     <button id="reset" onclick="resetTasbih()">Reset</button>
 
-    <!-- Message area for blessings, hadith, and Quranic verses -->
     <div id="message"></div>
 
-    <!-- Sound effect -->
     <audio id="beep-sound" src="https://residential-tiffany-streamppl-ca1d6f39.koyeb.app//29675/mixkit-censorship-beep-1082.wav?hash=b7f768"></audio>
 
     <script>
@@ -88,23 +86,19 @@
         let phraseIndex = 0;
         let finalDua = "La ilaha ill-Allah wahdahu la sharika lah, lahu`l-mulk wa lahu`l-hamd wa huwa `ala kulli shay`in qadir";
 
-        // Array of random Hadiths & Quranic Verses
         let dhikrMessages = [
-            "📖 *Quran (Surah Al-Baqarah 2:152)*: 'So remember Me; I will remember you. And be grateful to Me and do not deny Me.'",
+            "📖 *Quran (2:152)*: 'So remember Me; I will remember you.'",
             "🕌 *Sahih Muslim 2691*: 'The best of speech after the Quran is SubhanAllah, Alhamdulillah, La ilaha illAllah, and Allahu Akbar.'",
-            "📖 *Quran (Surah Ar-Ra’d 13:28)*: 'Verily, in the remembrance of Allah do hearts find rest.'",
+            "📖 *Quran (13:28)*: 'Verily, in the remembrance of Allah do hearts find rest.'",
             "🕌 *Sahih al-Bukhari 6407*: 'The example of one who remembers Allah and one who does not is like the living and the dead.'",
-            "📖 *Quran (Surah Al-Ahzab 33:41-42)*: 'O you who have believed, remember Allah with much remembrance and exalt Him morning and afternoon.'",
+            "📖 *Quran (33:41-42)*: 'O you who have believed, remember Allah with much remembrance.'",
             "🕌 *Sunan Ibn Majah 3790*: 'No one remembers Allah except that tranquility descends upon him, mercy covers him, and the angels surround him.'"
         ];
 
         function countTasbih() {
             counter++;
-
-            // Update progress bar
             document.getElementById("progress").style.width = (counter / 100) * 100 + "%";
 
-            // Update phrase correctly at 33 counts
             if (counter % 33 === 0 && phraseIndex < 2) {
                 phraseIndex++;
                 setTimeout(() => {
@@ -114,17 +108,13 @@
                 }, 200);
             }
 
-            // If completed 100, show the final dua and random Hadith/Quranic verse
             if (counter === 100) {
                 document.getElementById("display").innerText = finalDua;
                 document.getElementById("count").innerText = counter + " / 100";
                 document.getElementById("tasbihBtn").disabled = true;
                 
-                // Get a random message
                 let randomMessage = dhikrMessages[Math.floor(Math.random() * dhikrMessages.length)];
-                
-                // Blessings message
-                let blessings = "🌟 MashaAllah! May Allah bless you and keep you steadfast in His remembrance. Keep praying and remembering Allah! 🌟";
+                let blessings = "🌟 MashaAllah! May Allah bless you and keep you steadfast in His remembrance. 🌟";
                 
                 document.getElementById("message").innerHTML = `<p>${blessings}</p><p><strong>${randomMessage}</strong></p>`;
                 
@@ -133,7 +123,6 @@
                 return;
             }
 
-            // Update display
             document.getElementById("display").innerText = phrases[phraseIndex] + " " + ((counter % 33 === 0) ? 33 : counter % 33);
             document.getElementById("count").innerText = counter + " / 100";
         }
