@@ -56,8 +56,8 @@
     <div id="count">0 / 100</div>
     <button id="tasbihBtn" class="btn" onclick="countTasbih()">Click</button>
     <button id="reset" onclick="resetTasbih()">Reset</button>
-    
-    <!-- Message area for blessings & hadith -->
+
+    <!-- Message area for blessings, hadith, and Quranic verses -->
     <div id="message"></div>
 
     <!-- Sound effect -->
@@ -68,6 +68,16 @@
         let phrases = ["Subhan Allah", "Alhamdulillah", "Allahu Akbar"];
         let phraseIndex = 0;
         let finalDua = "La ilaha ill-Allah wahdahu la sharika lah, lahu`l-mulk wa lahu`l-hamd wa huwa `ala kulli shay`in qadir";
+
+        // Array of random Hadiths & Quranic Verses
+        let dhikrMessages = [
+            "📖 *Quran (Surah Al-Baqarah 2:152)*: 'So remember Me; I will remember you. And be grateful to Me and do not deny Me.'",
+            "🕌 *Sahih Muslim 2691*: 'The best of speech after the Quran is SubhanAllah, Alhamdulillah, La ilaha illAllah, and Allahu Akbar.'",
+            "📖 *Quran (Surah Ar-Ra’d 13:28)*: 'Verily, in the remembrance of Allah do hearts find rest.'",
+            "🕌 *Sahih al-Bukhari 6407*: 'The example of one who remembers Allah and one who does not is like the living and the dead.'",
+            "📖 *Quran (Surah Al-Ahzab 33:41-42)*: 'O you who have believed, remember Allah with much remembrance and exalt Him morning and afternoon.'",
+            "🕌 *Sunan Ibn Majah 3790*: 'No one remembers Allah except that tranquility descends upon him, mercy covers him, and the angels surround him.'"
+        ];
 
         function countTasbih() {
             counter++;
@@ -82,22 +92,22 @@
                 }, 200);
             }
 
-            // If completed 99, show the final dua and hadith
+            // If completed 99, show the final dua and random Hadith/Quranic verse
             if (counter === 100) {
                 document.getElementById("display").innerText = finalDua;
                 document.getElementById("count").innerText = counter + " / 100";
                 document.getElementById("tasbihBtn").disabled = true;
                 
+                // Get a random message
+                let randomMessage = dhikrMessages[Math.floor(Math.random() * dhikrMessages.length)];
+                
                 // Blessings message
                 let blessings = "🌟 MashaAllah! May Allah bless you and keep you steadfast in His remembrance. Keep praying and remembering Allah! 🌟";
                 
-                // Hadith about Dhikr
-                let hadith = "🕌 Prophet Muhammad ﷺ said: 'The example of the one who remembers Allah and the one who does not is like that of the living and the dead.' (Sahih al-Bukhari 6407)";
-                
-                document.getElementById("message").innerHTML = `<p>${blessings}</p><p><strong>${hadith}</strong></p>`;
+                document.getElementById("message").innerHTML = `<p>${blessings}</p><p><strong>${randomMessage}</strong></p>`;
                 
                 alert("Tasbih completed! Keep remembering Allah and stay steadfast in your Salah. May Allah bless you! 🤲");
-                
+
                 return;
             }
 
