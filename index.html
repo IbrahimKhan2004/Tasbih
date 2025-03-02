@@ -42,6 +42,11 @@
             background-color: #dc3545;
             color: white;
         }
+        #message {
+            font-size: 18px;
+            color: #555;
+            margin-top: 20px;
+        }
     </style>
 </head>
 <body>
@@ -51,6 +56,9 @@
     <div id="count">0 / 100</div>
     <button id="tasbihBtn" class="btn" onclick="countTasbih()">Click</button>
     <button id="reset" onclick="resetTasbih()">Reset</button>
+    
+    <!-- Message area for blessings & hadith -->
+    <div id="message"></div>
 
     <!-- Sound effect -->
     <audio id="beep-sound" src="https://residential-tiffany-streamppl-ca1d6f39.koyeb.app//29675/mixkit-censorship-beep-1082.wav?hash=b7f768"></audio>
@@ -71,15 +79,25 @@
                     alert("Switch to " + phrases[phraseIndex] + "!");
                     navigator.vibrate(500); // Vibrate for 500ms
                     document.getElementById("beep-sound").play(); // Play sound
-                }, 200); // Delay to ensure it's after switch
+                }, 200);
             }
 
-            // If completed 99, show the final dua
+            // If completed 99, show the final dua and hadith
             if (counter === 100) {
                 document.getElementById("display").innerText = finalDua;
-                alert("Tasbih completed with 100!");
                 document.getElementById("count").innerText = counter + " / 100";
                 document.getElementById("tasbihBtn").disabled = true;
+                
+                // Blessings message
+                let blessings = "🌟 MashaAllah! May Allah bless you and keep you steadfast in His remembrance. Keep praying and remembering Allah! 🌟";
+                
+                // Hadith about Dhikr
+                let hadith = "🕌 Prophet Muhammad ﷺ said: 'The example of the one who remembers Allah and the one who does not is like that of the living and the dead.' (Sahih al-Bukhari 6407)";
+                
+                document.getElementById("message").innerHTML = `<p>${blessings}</p><p><strong>${hadith}</strong></p>`;
+                
+                alert("Tasbih completed! Keep remembering Allah and stay steadfast in your Salah. May Allah bless you! 🤲");
+                
                 return;
             }
 
@@ -94,6 +112,7 @@
             document.getElementById("display").innerText = "Press the button to start";
             document.getElementById("count").innerText = "0 / 100";
             document.getElementById("tasbihBtn").disabled = false;
+            document.getElementById("message").innerHTML = "";
         }
     </script>
 
