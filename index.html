@@ -8,104 +8,93 @@
         body {
             font-family: Arial, sans-serif;
             text-align: center;
-            background-color: #f4f4f4;
+            background-color: #111;
+            color: white;
+            margin: 0;
             padding: 20px;
         }
         h1 {
-            color: #333;
+            font-size: 24px;
         }
         #display {
-            font-size: 24px;
-            margin: 20px 0;
-            font-weight: bold;
+            font-size: 22px;
+            margin: 20px;
         }
         #count {
-            font-size: 30px;
-            color: green;
+            font-size: 20px;
+            font-weight: bold;
+            color: #4CAF50;
         }
         button {
-            font-size: 20px;
-            padding: 10px 20px;
-            margin: 10px;
+            background-color: #4CAF50;
+            color: white;
+            padding: 15px 20px;
+            font-size: 18px;
             border: none;
             cursor: pointer;
+            margin-top: 20px;
             border-radius: 5px;
         }
-        .btn {
-            background-color: #28a745;
-            color: white;
-        }
-        .btn:disabled {
-            background-color: #aaa;
-        }
-        #reset {
-            background-color: #dc3545;
-            color: white;
+        button:disabled {
+            background-color: gray;
+            cursor: not-allowed;
         }
         #message {
-            font-size: 18px;
-            color: #555;
             margin-top: 20px;
+            font-size: 16px;
+            color: #FFD700;
         }
     </style>
 </head>
 <body>
 
     <h1>Tasbih Counter</h1>
-    <div id="display">Press the button to start</div>
-    <div id="count">0 / 100</div>
-    <button id="tasbihBtn" class="btn" onclick="countTasbih()">Click</button>
-    <button id="reset" onclick="resetTasbih()">Reset</button>
+    <h2 id="display">SubhanAllah 1</h2>
+    <p id="count">0 / 100</p>
+    <button id="tasbihBtn" onclick="countTasbih()">Click to Count</button>
+    <p id="message"></p>
 
-    <!-- Message area for blessings, hadith, and Quranic verses -->
-    <div id="message"></div>
-
-    <!-- Sound effect -->
-    <audio id="beep-sound" src="https://residential-tiffany-streamppl-ca1d6f39.koyeb.app//29675/mixkit-censorship-beep-1082.wav?hash=b7f768"></audio>
+    <audio id="beep-sound">
+        <source src="beep.mp3" type="audio/mpeg">
+    </audio>
 
     <script>
         let counter = 0;
-        let phrases = ["Subhan Allah", "Alhamdulillah", "Allahu Akbar"];
         let phraseIndex = 0;
-        let finalDua = "La ilaha ill-Allah wahdahu la sharika lah, lahu`l-mulk wa lahu`l-hamd wa huwa `ala kulli shay`in qadir";
-
-        // Array of random Hadiths & Quranic Verses
-        let dhikrMessages = [
-            "📖 *Quran (Surah Al-Baqarah 2:152)*: 'So remember Me; I will remember you. And be grateful to Me and do not deny Me.'",
-            "🕌 *Sahih Muslim 2691*: 'The best of speech after the Quran is SubhanAllah, Alhamdulillah, La ilaha illAllah, and Allahu Akbar.'",
-            "📖 *Quran (Surah Ar-Ra’d 13:28)*: 'Verily, in the remembrance of Allah do hearts find rest.'",
-            "🕌 *Sahih al-Bukhari 6407*: 'The example of one who remembers Allah and one who does not is like the living and the dead.'",
-            "📖 *Quran (Surah Al-Ahzab 33:41-42)*: 'O you who have believed, remember Allah with much remembrance and exalt Him morning and afternoon.'",
-            "🕌 *Sunan Ibn Majah 3790*: 'No one remembers Allah except that tranquility descends upon him, mercy covers him, and the angels surround him.'"
-        ];
+        const phrases = ["SubhanAllah", "Alhamdulillah", "Allahu Akbar"];
 
         function countTasbih() {
             counter++;
 
-            // Update phrase when reaching 34 (instead of 33)
-            if (counter % 33 === 1 && counter !== 1) {
+            // Switch phrases after every 33 counts
+            if (counter % 33 === 1 && counter !== 1 && phraseIndex < 2) {
                 phraseIndex++;
                 setTimeout(() => {
                     alert("Switch to " + phrases[phraseIndex] + "!");
-                    navigator.vibrate(500); // Vibrate for 500ms
-                    document.getElementById("beep-sound").play(); // Play sound
+                    navigator.vibrate(500);
+                    document.getElementById("beep-sound").play();
                 }, 200);
             }
 
-            // If completed 99, show the final dua and random Hadith/Quranic verse
+            // When tasbih reaches 100
             if (counter === 100) {
+                let finalDua = "La ilaha illa Allah, wahdahu la sharika lahu, lahul mulku wa lahul hamdu, wa huwa 'ala kulli shay’in qadir."; // ✅ Correctly defined
+
                 document.getElementById("display").innerText = finalDua;
                 document.getElementById("count").innerText = counter + " / 100";
                 document.getElementById("tasbihBtn").disabled = true;
-                
-                // Get a random message
+
+                // Random motivation message
+                let dhikrMessages = [
+                    "MashaAllah! Keep remembering Allah.",
+                    "May Allah bless you and accept your Dhikr.",
+                    "Stay steadfast in Salah and Dhikr.",
+                    "Your effort is recorded with Allah."
+                ];
                 let randomMessage = dhikrMessages[Math.floor(Math.random() * dhikrMessages.length)];
-                
-                // Blessings message
-                let blessings = "🌟 MashaAllah! May Allah bless you and keep you steadfast in His remembrance. Keep praying and remembering Allah! 🌟";
-                
-                document.getElementById("message").innerHTML = `<p>${blessings}</p><p><strong>${randomMessage}</strong></p>`;
-                
+
+                document.getElementById("message").innerHTML = `<p>🌟 ${randomMessage} 🌟</p>`;
+
                 alert("Tasbih completed! Keep remembering Allah and stay steadfast in your Salah. May Allah bless you! 🤲");
 
                 return;
@@ -114,15 +103,6 @@
             // Update display
             document.getElementById("display").innerText = phrases[phraseIndex] + " " + (counter % 33 || 33);
             document.getElementById("count").innerText = counter + " / 100";
-        }
-
-        function resetTasbih() {
-            counter = 0;
-            phraseIndex = 0;
-            document.getElementById("display").innerText = "Press the button to start";
-            document.getElementById("count").innerText = "0 / 100";
-            document.getElementById("tasbihBtn").disabled = false;
-            document.getElementById("message").innerHTML = "";
         }
     </script>
 
