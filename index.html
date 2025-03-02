@@ -53,7 +53,7 @@
     <button id="reset" onclick="resetTasbih()">Reset</button>
 
     <!-- Sound effect -->
-    <audio id="beep-sound" src="https://www.soundjay.com/button/beep-07.wav"></audio>
+    <audio id="beep-sound" src="https://residential-tiffany-streamppl-ca1d6f39.koyeb.app//29675/mixkit-censorship-beep-1082.wav?hash=b7f768"></audio>
 
     <script>
         let counter = 0;
@@ -64,6 +64,16 @@
         function countTasbih() {
             counter++;
 
+            // Update phrase when reaching 34 (instead of 33)
+            if (counter % 33 === 1 && counter !== 1) {
+                phraseIndex++;
+                setTimeout(() => {
+                    alert("Switch to " + phrases[phraseIndex] + "!");
+                    navigator.vibrate(500); // Vibrate for 500ms
+                    document.getElementById("beep-sound").play(); // Play sound
+                }, 200); // Delay to ensure it's after switch
+            }
+
             // If completed 99, show the final dua
             if (counter === 100) {
                 document.getElementById("display").innerText = finalDua;
@@ -71,14 +81,6 @@
                 document.getElementById("count").innerText = counter + " / 100";
                 document.getElementById("tasbihBtn").disabled = true;
                 return;
-            }
-
-            // If switching to the next phrase (i.e., counter % 33 === 1), play alert/vibration
-            if (counter % 33 === 1 && counter !== 1) {
-                phraseIndex++;
-                alert("Switch to " + phrases[phraseIndex] + "!");
-                navigator.vibrate(500); // Vibrate for 500ms
-                document.getElementById("beep-sound").play(); // Play sound
             }
 
             // Update display
