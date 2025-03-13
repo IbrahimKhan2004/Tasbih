@@ -124,7 +124,8 @@
             }
 
             // FIXED: Show "1" instead of "33" when switching phrases
-            document.getElementById("display").innerText = phrases[phraseIndex] + " " + (counter % 33 === 0 ? 1 : counter % 33);
+            let phraseCounter = counter % 33 === 0 ? 33 : counter % 33;
+            document.getElementById("display").innerText = phrases[phraseIndex] + " " + phraseCounter;
             document.getElementById("count").innerText = counter + " / 100";
         }
 
