@@ -9,7 +9,7 @@
         body {
             font-family: 'Poppins', sans-serif;
             text-align: center;
-            background-color: #0a192f; /* Deep navy */
+            background-color: #000000; /* True black for AMOLED */
             color: #e6f1ff; /* Light text for visibility */
             display: flex;
             justify-content: center;
@@ -18,7 +18,7 @@
             margin: 0;
         }
         .glass-container {
-            background: rgba(255, 255, 255, 0.1);
+            background: rgba(40, 40, 40, 0.5); /* Darker glass for AMOLED */
             backdrop-filter: blur(10px);
             border-radius: 15px;
             padding: 30px 40px;
@@ -119,7 +119,8 @@
     <div class="glass-container">
         <h1>Tasbih Counter</h1>
         <div id="display">Press the button to start</div>
-        <div id="count">0 / 100</div>
+        <div id="count">0 / 33</div>
+        <div id="total-count" style="font-size: 16px; color: #a0a0a0; margin-top: 10px;">Total: 0 / 100</div>
 
         <div id="progressBar">
             <div id="progress"></div>
@@ -137,34 +138,61 @@
         let counter = 0;
         let phrases = ["Subhan Allah", "Alhamdulillah", "Allahu Akbar"];
         let phraseIndex = 0;
-        let finalDua = "La ilaha ill-Allah wahdahu la sharika lah, lahu`l-mulk wa lahu`l-hamd wa huwa `ala kulli shay`in qadir";
+        let finalDua = "Lā ilāha illā-Allāh waḥdahu lā sharīka lah, lahu'l-mulk wa lahu'l-ḥamd wa huwa `alā kulli shay'in qadīr";
 
         let dhikrMessages = [
-            "📖 *Quran (2:152)*: 'So remember Me; I will remember you.'",
-            "🕌 *Sahih Muslim 2691*: 'The best of speech after the Quran is SubhanAllah, Alhamdulillah, La ilaha illAllah, and Allahu Akbar.'",
-            "📖 *Quran (13:28)*: 'Verily, in the remembrance of Allah do hearts find rest.'",
-            "🕌 *Sahih al-Bukhari 6407*: 'The example of one who remembers Allah and one who does not is like the living and the dead.'",
-            "📖 *Quran (33:41-42)*: 'O you who have believed, remember Allah with much remembrance.'",
-            "🕌 *Sunan Ibn Majah 3790*: 'No one remembers Allah except that tranquility descends upon him, mercy covers him, and the angels surround him.'"
+            "Subhan-Allahi wa bihamdihi, Subhan-Allahil-Azim (Glory be to Allah and His is the praise, (and) Allah, the Greatest is free from imperfection)",
+            "Ya hayyu ya qayyum bi-rahmatika astagheeth (O Living, O Self-Sustaining Sustainer! In Your Mercy do I seek relief)",
+            "Subhan-Allah, wal-hamdu-lillah, wa la ilaha illallah, wa Allahu Akbar (Glory is to Allah, praise is to Allah, none has the right to be worshiped but Allah and Allah is the Most Great.)",
+            "La hawla wa la quwwata illa billah (There is no power and no strength except with Allah)",
+            "Subhan-Allahi wa bihamdih, Astaghfirullah wa atubu ilaih (Allah is free from imperfection, I beg forgiveness from Allah and I turn to Him in repentance.)",
+            "Rabbighfirli watub `alayya innaka antat-Tawwabul-Ghafur (O my Rubb, forgive me, and accept my repentance. Verily, You are the Oft-Returning, the Most Forgiving.)",
+            "Allahumm-aghfir li, warhamni, wajburni, wahdini, warzuqni (O Allah! Pardon me, have mercy on me, help me, guide me, and grant me sustenance.)"
         ];
 
         function countTasbih() {
+            if (counter >= 100) return;
             counter++;
-            document.getElementById("progress").style.width = (counter / 100) * 100 + "%";
 
-            if (counter % 33 === 0 && phraseIndex < 2) {
-                phraseIndex++;
-                const display = document.getElementById("display");
-                display.classList.add("flash");
-                setTimeout(() => {
-                    display.classList.remove("flash");
-                    document.getElementById("beep-sound").play();
-                }, 500);
+            document.getElementById("progress").style.width = (counter / 100) * 100 + "%";
+            document.getElementById("total-count").innerText = "Total: " + counter + " / 100";
+
+            let phraseCounter;
+            let phraseLimit;
+
+            if (counter <= 33) {
+                phraseIndex = 0;
+                phraseCounter = counter;
+                phraseLimit = 33;
+            } else if (counter <= 66) {
+                if (phraseIndex < 1) { // flash only once when switching
+                    phraseIndex = 1;
+                    const display = document.getElementById("display");
+                    display.classList.add("flash");
+                    setTimeout(() => {
+                        display.classList.remove("flash");
+                        document.getElementById("beep-sound").play();
+                    }, 500);
+                }
+                phraseCounter = counter - 33;
+                phraseLimit = 33;
+            } else {
+                if (phraseIndex < 2) { // flash only once when switching
+                    phraseIndex = 2;
+                    const display = document.getElementById("display");
+                    display.classList.add("flash");
+                    setTimeout(() => {
+                        display.classList.remove("flash");
+                        document.getElementById("beep-sound").play();
+                    }, 500);
+                }
+                phraseCounter = counter - 66;
+                phraseLimit = 34;
             }
 
             if (counter === 100) {
                 document.getElementById("display").innerText = finalDua;
-                document.getElementById("count").innerText = counter + " / 100";
+                document.getElementById("count").innerText = ""; // Clear phrase count
                 document.getElementById("tasbihBtn").disabled = true;
                 
                 let randomMessage = dhikrMessages[Math.floor(Math.random() * dhikrMessages.length)];
@@ -175,17 +203,16 @@
                 return;
             }
 
-            // FIXED: Show "1" instead of "33" when switching phrases
-            let phraseCounter = counter % 33 === 0 ? 33 : counter % 33;
-            document.getElementById("display").innerText = phrases[phraseIndex] + " " + phraseCounter;
-            document.getElementById("count").innerText = counter + " / 100";
+            document.getElementById("display").innerText = phrases[phraseIndex];
+            document.getElementById("count").innerText = phraseCounter + " / " + phraseLimit;
         }
 
         function resetTasbih() {
             counter = 0;
             phraseIndex = 0;
             document.getElementById("display").innerText = "Press the button to start";
-            document.getElementById("count").innerText = "0 / 100";
+            document.getElementById("count").innerText = "0 / 33";
+            document.getElementById("total-count").innerText = "Total: 0 / 100";
             document.getElementById("tasbihBtn").disabled = false;
             document.getElementById("message").innerHTML = "";
             document.getElementById("progress").style.width = "0%";
