@@ -112,11 +112,35 @@
             50% { color: #FFD700; }
             100% { color: #e6f1ff; }
         }
+
+        #quran-verse-container {
+            margin-bottom: 20px;
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+            font-style: italic;
+            color: #e6f1ff;
+        }
+
+        #quran-verse-container p {
+            margin: 0;
+            padding: 0;
+        }
+
+        #quran-verse-container .reference {
+            display: block;
+            margin-top: 10px;
+            font-style: normal;
+            font-weight: 600;
+            color: #FFD700;
+            text-align: right;
+        }
     </style>
 </head>
 <body>
 
     <div class="glass-container">
+        <div id="quran-verse-container"></div>
         <h1>Tasbih Counter</h1>
         <div id="display">Press the button to start</div>
         <div id="count">0 / 33</div>
@@ -207,6 +231,31 @@
             document.getElementById("count").innerText = phraseCounter + " / " + phraseLimit;
         }
 
+        function fetchRandomVerse() {
+            const verseContainer = document.getElementById("quran-verse-container");
+            const randomAyah = Math.floor(Math.random() * 6236) + 1;
+            fetch(`https://api.alquran.cloud/v1/ayah/${randomAyah}/en.asad`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.code === 200) {
+                        const verse = data.data;
+                        const verseText = verse.text;
+                        const surah = verse.surah.englishName;
+                        const ayahNumber = verse.numberInSurah;
+                        verseContainer.innerHTML = `
+                            <p>"${verseText}"</p>
+                            <span class="reference">${surah} ${ayahNumber}</span>
+                        `;
+                    } else {
+                        verseContainer.innerHTML = "<p>Could not fetch a verse. Please try again later.</p>";
+                    }
+                })
+                .catch(error => {
+                    console.error("Error fetching Quran verse:", error);
+                    verseContainer.innerHTML = "<p>Could not fetch a verse. Please try again later.</p>";
+                });
+        }
+
         function resetTasbih() {
             counter = 0;
             phraseIndex = 0;
@@ -217,6 +266,8 @@
             document.getElementById("message").innerHTML = "";
             document.getElementById("progress").style.width = "0%";
         }
+
+        document.addEventListener("DOMContentLoaded", fetchRandomVerse);
     </script>
 
 </body>
