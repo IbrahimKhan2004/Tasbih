@@ -4,48 +4,79 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tasbih Counter</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Poppins', sans-serif;
             text-align: center;
-            background-color: black; /* Dark background */
-            color: white; /* White text for visibility */
-            padding: 20px;
+            background-color: #000000; /* True black for AMOLED */
+            color: #e6f1ff; /* Light text for visibility */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+        .glass-container {
+            background: rgba(40, 40, 40, 0.5); /* Darker glass for AMOLED */
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 30px 40px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+            width: 90%;
+            max-width: 400px;
         }
         h1 {
-            color: white;
+            color: #FFD700; /* Gold */
+            font-weight: 600;
         }
         #display {
-            font-size: 24px;
+            font-size: 20px;
             margin: 20px 0;
-            font-weight: bold;
+            font-weight: 400;
+            min-height: 24px;
         }
         #count {
-            font-size: 30px;
-            color: lightgreen;
+            font-size: 28px;
+            color: #00ff9b; /* Emerald green */
+            font-weight: 600;
         }
         button {
-            font-size: 20px;
-            padding: 10px 20px;
+            font-size: 18px;
+            padding: 12px 24px;
             margin: 10px;
             border: none;
             cursor: pointer;
-            border-radius: 5px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            font-weight: 600;
         }
         .btn {
-            background-color: #1f8a44; /* Darker green */
-            color: white;
+            background-color: #00ff9b; /* Emerald green */
+            color: #0a192f;
+        }
+        .btn:hover {
+            background-color: #00e68a;
+            box-shadow: 0 0 15px #00ff9b;
         }
         .btn:disabled {
-            background-color: #555; /* Disabled look */
+            background-color: #555;
+            cursor: not-allowed;
         }
         #reset {
-            background-color: #b30000; /* Dark red */
+            background-color: transparent;
+            color: #FFD700; /* Gold */
+            border: 2px solid #FFD700;
+        }
+        #reset:hover {
+            background-color: #FFD700;
+            color: #0a192f;
         }
         #progressBar {
-            width: 80%;
-            height: 20px;
-            background-color: grey;
+            width: 100%;
+            height: 10px;
+            background-color: rgba(255, 255, 255, 0.2);
             border-radius: 10px;
             margin: 20px auto;
             overflow: hidden;
@@ -53,30 +84,53 @@
         #progress {
             width: 0%;
             height: 100%;
-            background-color: lightgreen;
+            background: linear-gradient(90deg, #00ff9b, #FFD700);
             transition: width 0.3s;
         }
         #message {
-            font-size: 18px;
-            color: lightgray;
+            font-size: 16px;
+            color: #e6f1ff;
             margin-top: 20px;
+            line-height: 1.6;
+        }
+        /* Responsive Design */
+        @media (max-width: 480px) {
+            .glass-container {
+                padding: 20px;
+            }
+            button {
+                padding: 10px 20px;
+                font-size: 16px;
+            }
+        }
+        .flash {
+            animation: flash-animation 0.5s;
+        }
+
+        @keyframes flash-animation {
+            0% { color: #e6f1ff; }
+            50% { color: #FFD700; }
+            100% { color: #e6f1ff; }
         }
     </style>
 </head>
 <body>
 
-    <h1>Tasbih Counter</h1>
-    <div id="display">Press the button to start</div>
-    <div id="count">0 / 100</div>
+    <div class="glass-container">
+        <h1>Tasbih Counter</h1>
+        <div id="display">Press the button to start</div>
+        <div id="count">0 / 33</div>
+        <div id="total-count" style="font-size: 16px; color: #a0a0a0; margin-top: 10px;">Total: 0 / 100</div>
 
-    <div id="progressBar">
-        <div id="progress"></div>
+        <div id="progressBar">
+            <div id="progress"></div>
+        </div>
+
+        <button id="tasbihBtn" class="btn" onclick="countTasbih()">Click</button>
+        <button id="reset" onclick="resetTasbih()">Reset</button>
+
+        <div id="message"></div>
     </div>
-
-    <button id="tasbihBtn" class="btn" onclick="countTasbih()">Click</button>
-    <button id="reset" onclick="resetTasbih()">Reset</button>
-
-    <div id="message"></div>
 
     <audio id="beep-sound" src="https://residential-tiffany-streamppl-ca1d6f39.koyeb.app//29675/mixkit-censorship-beep-1082.wav?hash=b7f768"></audio>
 
@@ -84,33 +138,61 @@
         let counter = 0;
         let phrases = ["Subhan Allah", "Alhamdulillah", "Allahu Akbar"];
         let phraseIndex = 0;
-        let finalDua = "La ilaha ill-Allah wahdahu la sharika lah, lahu`l-mulk wa lahu`l-hamd wa huwa `ala kulli shay`in qadir";
+        let finalDua = "Lā ilāha illā-Allāh waḥdahu lā sharīka lah, lahu'l-mulk wa lahu'l-ḥamd wa huwa `alā kulli shay'in qadīr";
 
         let dhikrMessages = [
-            "📖 *Quran (2:152)*: 'So remember Me; I will remember you.'",
-            "🕌 *Sahih Muslim 2691*: 'The best of speech after the Quran is SubhanAllah, Alhamdulillah, La ilaha illAllah, and Allahu Akbar.'",
-            "📖 *Quran (13:28)*: 'Verily, in the remembrance of Allah do hearts find rest.'",
-            "🕌 *Sahih al-Bukhari 6407*: 'The example of one who remembers Allah and one who does not is like the living and the dead.'",
-            "📖 *Quran (33:41-42)*: 'O you who have believed, remember Allah with much remembrance.'",
-            "🕌 *Sunan Ibn Majah 3790*: 'No one remembers Allah except that tranquility descends upon him, mercy covers him, and the angels surround him.'"
+            "Subhan-Allahi wa bihamdihi, Subhan-Allahil-Azim (Glory be to Allah and His is the praise, (and) Allah, the Greatest is free from imperfection)",
+            "Ya hayyu ya qayyum bi-rahmatika astagheeth (O Living, O Self-Sustaining Sustainer! In Your Mercy do I seek relief)",
+            "Subhan-Allah, wal-hamdu-lillah, wa la ilaha illallah, wa Allahu Akbar (Glory is to Allah, praise is to Allah, none has the right to be worshiped but Allah and Allah is the Most Great.)",
+            "La hawla wa la quwwata illa billah (There is no power and no strength except with Allah)",
+            "Subhan-Allahi wa bihamdih, Astaghfirullah wa atubu ilaih (Allah is free from imperfection, I beg forgiveness from Allah and I turn to Him in repentance.)",
+            "Rabbighfirli watub `alayya innaka antat-Tawwabul-Ghafur (O my Rubb, forgive me, and accept my repentance. Verily, You are the Oft-Returning, the Most Forgiving.)",
+            "Allahumm-aghfir li, warhamni, wajburni, wahdini, warzuqni (O Allah! Pardon me, have mercy on me, help me, guide me, and grant me sustenance.)"
         ];
 
         function countTasbih() {
+            if (counter >= 100) return;
             counter++;
-            document.getElementById("progress").style.width = (counter / 100) * 100 + "%";
 
-            if (counter % 33 === 0 && phraseIndex < 2) {
-                phraseIndex++;
-                setTimeout(() => {
-                    alert("Switch to " + phrases[phraseIndex] + "!");
-                    navigator.vibrate(500);
-                    document.getElementById("beep-sound").play();
-                }, 200);
+            document.getElementById("progress").style.width = (counter / 100) * 100 + "%";
+            document.getElementById("total-count").innerText = "Total: " + counter + " / 100";
+
+            let phraseCounter;
+            let phraseLimit;
+
+            if (counter <= 33) {
+                phraseIndex = 0;
+                phraseCounter = counter;
+                phraseLimit = 33;
+            } else if (counter <= 66) {
+                if (phraseIndex < 1) { // flash only once when switching
+                    phraseIndex = 1;
+                    const display = document.getElementById("display");
+                    display.classList.add("flash");
+                    setTimeout(() => {
+                        display.classList.remove("flash");
+                        document.getElementById("beep-sound").play();
+                    }, 500);
+                }
+                phraseCounter = counter - 33;
+                phraseLimit = 33;
+            } else {
+                if (phraseIndex < 2) { // flash only once when switching
+                    phraseIndex = 2;
+                    const display = document.getElementById("display");
+                    display.classList.add("flash");
+                    setTimeout(() => {
+                        display.classList.remove("flash");
+                        document.getElementById("beep-sound").play();
+                    }, 500);
+                }
+                phraseCounter = counter - 66;
+                phraseLimit = 34;
             }
 
             if (counter === 100) {
                 document.getElementById("display").innerText = finalDua;
-                document.getElementById("count").innerText = counter + " / 100";
+                document.getElementById("count").innerText = ""; // Clear phrase count
                 document.getElementById("tasbihBtn").disabled = true;
                 
                 let randomMessage = dhikrMessages[Math.floor(Math.random() * dhikrMessages.length)];
@@ -118,22 +200,19 @@
                 
                 document.getElementById("message").innerHTML = `<p>${blessings}</p><p><strong>${randomMessage}</strong></p>`;
                 
-                alert("Tasbih completed! Keep remembering Allah and stay steadfast in your Salah. May Allah bless you! 🤲");
-
                 return;
             }
 
-            // FIXED: Show "1" instead of "33" when switching phrases
-            let phraseCounter = counter % 33 === 0 ? 33 : counter % 33;
-            document.getElementById("display").innerText = phrases[phraseIndex] + " " + phraseCounter;
-            document.getElementById("count").innerText = counter + " / 100";
+            document.getElementById("display").innerText = phrases[phraseIndex];
+            document.getElementById("count").innerText = phraseCounter + " / " + phraseLimit;
         }
 
         function resetTasbih() {
             counter = 0;
             phraseIndex = 0;
             document.getElementById("display").innerText = "Press the button to start";
-            document.getElementById("count").innerText = "0 / 100";
+            document.getElementById("count").innerText = "0 / 33";
+            document.getElementById("total-count").innerText = "Total: 0 / 100";
             document.getElementById("tasbihBtn").disabled = false;
             document.getElementById("message").innerHTML = "";
             document.getElementById("progress").style.width = "0%";
