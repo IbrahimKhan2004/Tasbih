@@ -4,48 +4,79 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tasbih Counter</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Poppins', sans-serif;
             text-align: center;
-            background-color: black; /* Dark background */
-            color: white; /* White text for visibility */
-            padding: 20px;
+            background-color: #0a192f; /* Deep navy */
+            color: #e6f1ff; /* Light text for visibility */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+        .glass-container {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 30px 40px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+            width: 90%;
+            max-width: 400px;
         }
         h1 {
-            color: white;
+            color: #FFD700; /* Gold */
+            font-weight: 600;
         }
         #display {
-            font-size: 24px;
+            font-size: 20px;
             margin: 20px 0;
-            font-weight: bold;
+            font-weight: 400;
+            min-height: 24px;
         }
         #count {
-            font-size: 30px;
-            color: lightgreen;
+            font-size: 28px;
+            color: #00ff9b; /* Emerald green */
+            font-weight: 600;
         }
         button {
-            font-size: 20px;
-            padding: 10px 20px;
+            font-size: 18px;
+            padding: 12px 24px;
             margin: 10px;
             border: none;
             cursor: pointer;
-            border-radius: 5px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            font-weight: 600;
         }
         .btn {
-            background-color: #1f8a44; /* Darker green */
-            color: white;
+            background-color: #00ff9b; /* Emerald green */
+            color: #0a192f;
+        }
+        .btn:hover {
+            background-color: #00e68a;
+            box-shadow: 0 0 15px #00ff9b;
         }
         .btn:disabled {
-            background-color: #555; /* Disabled look */
+            background-color: #555;
+            cursor: not-allowed;
         }
         #reset {
-            background-color: #b30000; /* Dark red */
+            background-color: transparent;
+            color: #FFD700; /* Gold */
+            border: 2px solid #FFD700;
+        }
+        #reset:hover {
+            background-color: #FFD700;
+            color: #0a192f;
         }
         #progressBar {
-            width: 80%;
-            height: 20px;
-            background-color: grey;
+            width: 100%;
+            height: 10px;
+            background-color: rgba(255, 255, 255, 0.2);
             border-radius: 10px;
             margin: 20px auto;
             overflow: hidden;
@@ -53,30 +84,52 @@
         #progress {
             width: 0%;
             height: 100%;
-            background-color: lightgreen;
+            background: linear-gradient(90deg, #00ff9b, #FFD700);
             transition: width 0.3s;
         }
         #message {
-            font-size: 18px;
-            color: lightgray;
+            font-size: 16px;
+            color: #e6f1ff;
             margin-top: 20px;
+            line-height: 1.6;
+        }
+        /* Responsive Design */
+        @media (max-width: 480px) {
+            .glass-container {
+                padding: 20px;
+            }
+            button {
+                padding: 10px 20px;
+                font-size: 16px;
+            }
+        }
+        .flash {
+            animation: flash-animation 0.5s;
+        }
+
+        @keyframes flash-animation {
+            0% { color: #e6f1ff; }
+            50% { color: #FFD700; }
+            100% { color: #e6f1ff; }
         }
     </style>
 </head>
 <body>
 
-    <h1>Tasbih Counter</h1>
-    <div id="display">Press the button to start</div>
-    <div id="count">0 / 100</div>
+    <div class="glass-container">
+        <h1>Tasbih Counter</h1>
+        <div id="display">Press the button to start</div>
+        <div id="count">0 / 100</div>
 
-    <div id="progressBar">
-        <div id="progress"></div>
+        <div id="progressBar">
+            <div id="progress"></div>
+        </div>
+
+        <button id="tasbihBtn" class="btn" onclick="countTasbih()">Click</button>
+        <button id="reset" onclick="resetTasbih()">Reset</button>
+
+        <div id="message"></div>
     </div>
-
-    <button id="tasbihBtn" class="btn" onclick="countTasbih()">Click</button>
-    <button id="reset" onclick="resetTasbih()">Reset</button>
-
-    <div id="message"></div>
 
     <audio id="beep-sound" src="https://residential-tiffany-streamppl-ca1d6f39.koyeb.app//29675/mixkit-censorship-beep-1082.wav?hash=b7f768"></audio>
 
@@ -101,11 +154,12 @@
 
             if (counter % 33 === 0 && phraseIndex < 2) {
                 phraseIndex++;
+                const display = document.getElementById("display");
+                display.classList.add("flash");
                 setTimeout(() => {
-                    alert("Switch to " + phrases[phraseIndex] + "!");
-                    navigator.vibrate(500);
+                    display.classList.remove("flash");
                     document.getElementById("beep-sound").play();
-                }, 200);
+                }, 500);
             }
 
             if (counter === 100) {
@@ -118,8 +172,6 @@
                 
                 document.getElementById("message").innerHTML = `<p>${blessings}</p><p><strong>${randomMessage}</strong></p>`;
                 
-                alert("Tasbih completed! Keep remembering Allah and stay steadfast in your Salah. May Allah bless you! 🤲");
-
                 return;
             }
 
