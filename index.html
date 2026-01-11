@@ -142,15 +142,15 @@
     <div class="glass-container">
         <div id="quran-verse-container"></div>
         <h1>Tasbih Counter</h1>
-        <div id="display">Press the button to start</div>
-        <div id="count">0 / 33</div>
-        <div id="total-count" style="font-size: 16px; color: #a0a0a0; margin-top: 10px;">Total: 0 / 100</div>
+        <div id="display" aria-live="polite">Press the button to start</div>
+        <div id="count" aria-live="polite">0 / 33</div>
+        <div id="total-count" style="font-size: 16px; color: #a0a0a0; margin-top: 10px;" aria-live="polite">Total: 0 / 100</div>
 
         <div id="progressBar">
             <div id="progress"></div>
         </div>
 
-        <button id="tasbihBtn" class="btn" onclick="countTasbih()">Click</button>
+        <button id="tasbihBtn" class="btn" onclick="countTasbih()">Count</button>
         <button id="reset" onclick="resetTasbih()">Reset</button>
 
         <div id="message"></div>
